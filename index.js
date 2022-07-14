@@ -48,7 +48,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             }) 
 
 
-            // PUT / Update 
+            // PUT or UPDATE
             app.put('/student/:id', async (req, res)=>{
                 const id = req.params.id;
                 const updatedStudent = req.body;
@@ -71,7 +71,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
                 res.send(resultDelete);
     
             })
-
 
 
 
