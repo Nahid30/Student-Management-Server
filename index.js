@@ -27,6 +27,16 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
                 const students = await cursor.toArray();
                 res.send(students);
             })
+
+
+            // POST 
+            app.post('/student', async (req, res) => {
+                const addNewStudent = req.body;
+                const result = await studentCollection.insertOne(addNewStudent);
+                res.send(result);
+            }) 
+
+
         }
         finally{
             // client.close();
