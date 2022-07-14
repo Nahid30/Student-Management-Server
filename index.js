@@ -21,12 +21,23 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             await client.connect();
             const studentCollection = client.db('student_management').collection('students');
 
+
+            // GET 
             app.get('/student', async (req, res)=>{
                 const query = {};
                 const cursor = studentCollection.find(query);
                 const students = await cursor.toArray();
                 res.send(students);
-            })
+            });
+
+
+            // GET by particular id 
+            app.get('/student/:id', async (req, res)=>{
+                const id = req.params.id;
+                const query = {_id: ObjectId(id)};
+                const student = await studentCollection.findOne(query);
+                res.send(student);
+            });
 
 
             // POST 
@@ -35,6 +46,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
                 const result = await studentCollection.insertOne(addNewStudent);
                 res.send(result);
             }) 
+
+
+            // PUT / Update 
+            app.put('/student/:id', async (req, res)=>{
+                const id = req.params.id;
+                const updatedStudent = req.body;
+                const filter = { _id: ObjectId(id)};
+                const options = { upsert: true };
+                const updatedDoc = {
+                    $set : {...updatedStudent}
+                };
+                const result = await studentCollection.updateOne(filter, updatedDoc, options);
+                res.send(result);
+            })
+
+
 
             // DELETE 
             app.delete('/student/:id', async (req, res) => {
@@ -45,7 +72,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     
             })
 
-            
+
 
 
         }
@@ -54,15 +81,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         }
 
 
+
 }
 run().catch(console.dir);
-
-
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
 
 
 
